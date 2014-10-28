@@ -1,0 +1,50 @@
+body {
+    background: #a8c090;
+}
+
+.board {
+	display: table;
+	margin: auto;
+	border: 1px #789078 solid;
+	border-spacing: 0;
+	margin-top: 20px;
+}
+
+.request {
+    display: table;
+    margin: auto;
+    border: 1px #789078 solid;
+    border-spacing: 0;
+    margin-top: 20px;
+}
+
+.row {
+	display: table-row;
+}
+
+.cell {
+	display: table-cell;
+	width: 64px;
+	height: 64px;
+	padding: 0;
+}
+
+.black {
+	background: #a89060;
+    border: #a89060 3px solid;
+}
+
+.white {
+	background: #d8d890;
+    border: #d8d890 3px solid;
+}
+
+.available {
+    border: #e38b00 3px solid;
+}
+
+.chessman {
+	width: 64px;
+	height: 64px;
+	display: block;
+}
