@@ -39,8 +39,8 @@ $(function() {
         this.moved = false;
 
         this.$chessman.addClass(color);
-        this.color === "dark"?
-            this.$chessman.attr('src', images.king.dark) : this.$chessman.attr('src', images.king.light);
+        this.color === "dark" ?
+           this.$chessman.attr('src', images.king.dark) : this.$chessman.attr('src', images.king.light);
         $(finder.cell(this.x, this.y)).append(this.$chessman);
 
         this.$chessman.on("click", function(e) {
@@ -60,6 +60,8 @@ $(function() {
         this.availableMoves = function() {
 
         };
+
+        this.constructor = King;
     };
 
     function Queen (color, x, y) {
@@ -69,7 +71,7 @@ $(function() {
         this.y = y;
 
         this.$chessman.addClass(color);
-        this.color === "dark"?
+        this.color === "dark" ?
             this.$chessman.attr('src', images.queen.dark) : this.$chessman.attr('src', images.queen.light);
         $(finder.cell(this.x, this.y)).append(this.$chessman);
 
@@ -86,6 +88,8 @@ $(function() {
         this.availableMoves = function() {
 
         };
+
+        this.constructor = Queen;
     };
 
     function Rook (color, x, y) {
@@ -96,7 +100,7 @@ $(function() {
         this.moved = false;
 
         this.$chessman.addClass(color);
-        this.color === "dark"?
+        this.color === "dark" ?
             this.$chessman.attr('src', images.rook.dark) : this.$chessman.attr('src', images.rook.light);
         $(finder.cell(this.x, this.y)).append(this.$chessman);
 
@@ -117,6 +121,8 @@ $(function() {
         this.availableMoves = function() {
 
         };
+
+        this.constructor = Rook;
     };
 
     function Knight (color, x, y) {
@@ -126,7 +132,7 @@ $(function() {
         this.y = y;
 
         this.$chessman.addClass(color);
-        this.color === "dark"?
+        this.color === "dark" ?
             this.$chessman.attr('src', images.knight.dark) : this.$chessman.attr('src', images.knight.light);
         $(finder.cell(this.x, this.y)).append(this.$chessman);
 
@@ -143,6 +149,8 @@ $(function() {
         this.availableMoves = function() {
 
         };
+
+        this.constructor = Knight;
     };
 
     function Bishop (color, x, y) {
@@ -152,7 +160,7 @@ $(function() {
         this.y = y;
 
         this.$chessman.addClass(color);
-        this.color === "dark"?
+        this.color === "dark" ?
             this.$chessman.attr('src', images.bishop.dark) : this.$chessman.attr('src', images.bishop.light);
         $(finder.cell(this.x, this.y)).append(this.$chessman);
 
@@ -173,6 +181,8 @@ $(function() {
         this.availableMoves = function() {
 
         };
+
+        this.constructor = Bishop;
     };
 
     function Pawn (color, x, y) {
@@ -183,7 +193,7 @@ $(function() {
         this.moved = false;
 
         this.$chessman.addClass(color);
-        this.color === "dark"?
+        this.color === "dark" ?
             this.$chessman.attr('src', images.pawn.dark) : this.$chessman.attr('src', images.pawn.light);
         $(finder.cell(this.x, this.y)).append(this.$chessman);
 
@@ -205,8 +215,8 @@ $(function() {
 
             board.clearAvailableMoves();
             board.matrix[this.x][this.y] = null;
-            this.x = $(e.currentTarget).attr('data-x') - 0;
-            this.y = $(e.currentTarget).attr('data-y') - 0;
+            this.x = $(e.currentTarget).data('x');
+            this.y = $(e.currentTarget).data('y');
 
             if (board.matrix[this.x][this.y] != null)
                 board.kill(this.x, this.y);
@@ -236,8 +246,8 @@ $(function() {
         var enPassantMove = function(e) {
             board.clearAvailableMoves();
             board.matrix[this.x][this.y] = null;
-            this.x = $(e.currentTarget).attr('data-x') - 0;
-            this.y = $(e.currentTarget).attr('data-y') - 0;
+            this.x = $(e.currentTarget).data('x');
+            this.y = $(e.currentTarget).data('y');
 
             board.kill(board.enPassant.realX, board.enPassant.realY);
             board.matrix[this.x][this.y] = this;
@@ -278,6 +288,8 @@ $(function() {
                 $(finder.cell(this.x + shift, this.y + 1)).addClass('available').on('click', enPassantMove.bind(this));
             }
         };
+
+        this.constructor = Pawn;
     };
 
     function Board(){
