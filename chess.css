@@ -7,15 +7,20 @@ body {
 	margin: auto;
 	border: 1px #789078 solid;
 	border-spacing: 0;
-	margin-top: 20px;
 }
 
 .request {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.text {
+    color: #e38b00;
+    text-align: center;
+}
+
+.pieces {
     display: table;
-    margin: auto;
-    border: 1px #789078 solid;
-    border-spacing: 0;
-    margin-top: 20px;
 }
 
 .row {
