@@ -4,7 +4,7 @@ $(function() {
         row: '<div class="row"></div>',
         cell: '<div class="cell"></div>',
         img: '<img class="chessman"/>',
-        request: '<div class="request"><div class="text">Выберите фигуру:</div><div class="pieces"></div></div>'
+        request: '<div class="request-wrapper"><div class="request"><div class="text">Выберите фигуру:</div><div class="pieces"></div></div></div>'
     };
 
     var images = {
@@ -456,7 +456,6 @@ $(function() {
                 board.kill(this.x, this.y);
 
             if (this.x == 0 || this.x == 7) {
-                $('.board').hide();
                 this.$chessman.remove();
                 board.showRequest(this.x, this.y);
                 board.kill(this.x, this.y);
@@ -579,8 +578,10 @@ $(function() {
         };
 
         this.kill = function (x, y) {
-            this.matrix[x][y].$chessman.remove();
-            this.matrix[x][y] = null;
+            if (this.matrix[x][y]) {
+                this.matrix[x][y].$chessman.remove();
+                this.matrix[x][y] = null;
+            }
         };
 
         this.changePlayer = function () {
@@ -598,7 +599,6 @@ $(function() {
                 .on('click', function (x, y) {
                     $palette.remove();
                     $request.hide();
-                    $('.board').show();
 
                     board.matrix[x][y] = new Rook(this.move, x, y);
                     this.moved = true;
@@ -610,7 +610,6 @@ $(function() {
                 .on('click', function (x, y) {
                     $palette.remove();
                     $request.hide();
-                    $('.board').show();
 
                     board.matrix[x][y] = new Knight(this.move, x, y);
                     board.changePlayer();
@@ -621,7 +620,6 @@ $(function() {
                 .on('click', function (x, y) {
                     $palette.remove();
                     $request.hide();
-                    $('.board').show();
 
                     board.matrix[x][y] = new Bishop(this.move, x, y);
                     this.moved = true;
@@ -633,14 +631,17 @@ $(function() {
                 .on('click', function (x, y) {
                     $palette.remove();
                     $request.hide();
-                    $('.board').show();
 
                     board.matrix[x][y] = new Queen(this.move, x, y);
                     this.moved = true;
                     board.changePlayer();
                 }.bind(this, x, y));
 
-            $request.css({display: 'inline-block'});
+            if (this.move === "dark")
+                $('.request').css({right: 0});
+            else
+                $('.request').css({right: ""});
+            $request.show();
         };
     }
 
