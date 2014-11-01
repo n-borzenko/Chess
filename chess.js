@@ -115,6 +115,8 @@ $(function() {
                         var temp = board.matrix[x][y];
                         temp.locked = true;
                         board.matrix[x][y] = this;
+                        this.currentX = x;
+                        this.currentY = y;
 
                         if (!board.canKillKing())
                             this.moves.push({x: x, y: y});
@@ -134,7 +136,7 @@ $(function() {
 					!board.matrix[this.x][0].moved) {
 						can = true;
 
-						for (i = this.x; i >= 2 && can; i--) {
+						for (i = this.y; i >= 2 && can; i--) {
 							board.matrix[this.x][i] = this;
                             this.currentX = this.x;
                             this.currentY = i;
@@ -152,7 +154,7 @@ $(function() {
 					board.matrix[this.x][7] instanceof Rook && !board.matrix[this.x][7].moved) {
 						can = true;
 
-						for (i = this.x; i <= 6 && can; i++) {
+						for (i = this.y; i <= 6 && can; i++) {
 							board.matrix[this.x][i] = this;
                             this.currentX = this.x;
                             this.currentY = i;
