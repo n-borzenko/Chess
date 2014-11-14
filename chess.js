@@ -1,4 +1,4 @@
-$(function() {
+$(function(io) {
 	var templates = {
 		table: '<div class="board"></div>',
 		row: '<div class="row"></div>',
@@ -51,7 +51,7 @@ $(function() {
 		$(finder.cell(this.x, this.y)).append(this.$chessman);
 
 		this.$chessman.on("click", function(e) {
-			if (this.color === board.move) {
+			if (this.color === board.move && this.color === board.player) {
 				board.clearAvailableMoves();
 				this.availableMoves();
 				e.stopPropagation();
@@ -60,9 +60,10 @@ $(function() {
 	}
 
 	King.prototype = new function() {
-		var move = function(e) {
+		this.move = function(e) {
 			board.clearAvailableMoves();
-			board.matrix[this.x][this.y] = null;
+            var tmp = {x: this.x, y: this.y};
+            board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
             this.currentX = this.x;
@@ -74,12 +75,13 @@ $(function() {
 			this.moved = true;
 			board.matrix[this.x][this.y] = this;
 			this.$chessman.appendTo($(finder.cell(this.x, this.y)));
-			board.changePlayer();
+			board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
-		var castlingMove = function(e) {
+        this.castlingMove = function(e) {
 			board.clearAvailableMoves();
-			board.matrix[this.x][this.y] = null;
+            var tmp = {x: this.x, y: this.y};
+            board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
             this.currentX = this.x;
@@ -89,7 +91,7 @@ $(function() {
 			board.matrix[this.x][this.y] = this;
 			this.$chessman.appendTo($(finder.cell(this.x, this.y)));
 			this.y === 2? board.matrix[this.x][0].castlingMove() : board.matrix[this.x][7].castlingMove();
-			board.changePlayer();
+            board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
         var shift = [
@@ -187,9 +189,9 @@ $(function() {
 		this.availableMoves = function() {
 			this.moves.forEach(function(item) {
 				if (!item.castling)
-					$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this));
+					$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this));
 				else
-					$(finder.cell(item.x, item.y)).addClass('available').on('click', castlingMove.bind(this));
+					$(finder.cell(item.x, item.y)).addClass('available').on('click', this.castlingMove.bind(this));
 			}.bind(this));
 		};
 
@@ -222,7 +224,7 @@ $(function() {
 		$(finder.cell(this.x, this.y)).append(this.$chessman);
 
 		this.$chessman.on("click", function(e) {
-			if (this.color === board.move) {
+			if (this.color === board.move && this.color === board.player) {
 				board.clearAvailableMoves();
 				this.availableMoves();
 				e.stopPropagation();
@@ -231,9 +233,10 @@ $(function() {
 	}
 
 	Queen.prototype = new function(){
-		var move = function(e) {
+        this.move = function(e) {
 			board.clearAvailableMoves();
-			board.matrix[this.x][this.y] = null;
+            var tmp = {x: this.x, y: this.y};
+            board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
 
@@ -242,7 +245,7 @@ $(function() {
 
 			board.matrix[this.x][this.y] = this;
 			this.$chessman.appendTo($(finder.cell(this.x, this.y)));
-			board.changePlayer();
+            board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
 		var shift = [
@@ -290,7 +293,7 @@ $(function() {
 
 		this.availableMoves = function() {
 			this.moves.forEach(function(item) {
-					$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this));
+					$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this));
 			}.bind(this));
 		};
 
@@ -328,7 +331,7 @@ $(function() {
 		$(finder.cell(this.x, this.y)).append(this.$chessman);
 
 		this.$chessman.on("click", function(e) {
-			if (this.color === board.move) {
+			if (this.color === board.move && this.color === board.player) {
 				board.clearAvailableMoves();
 				this.availableMoves();
 				e.stopPropagation();
@@ -337,9 +340,10 @@ $(function() {
 	}
 
 	Rook.prototype = new function(){
-		var move = function(e) {
+        this.move = function(e) {
 			board.clearAvailableMoves();
-			board.matrix[this.x][this.y] = null;
+            var tmp = {x: this.x, y: this.y};
+            board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
 
@@ -349,7 +353,7 @@ $(function() {
 			this.moved = true;
 			board.matrix[this.x][this.y] = this;
 			this.$chessman.appendTo($(finder.cell(this.x, this.y)));
-			board.changePlayer();
+            board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
 		this.castlingMove = function() {
@@ -401,7 +405,7 @@ $(function() {
 
 		this.availableMoves = function() {
 			this.moves.forEach(function(item) {
-				$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this));
+				$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this));
 			}.bind(this));
 		};
 
@@ -438,7 +442,7 @@ $(function() {
 		$(finder.cell(this.x, this.y)).append(this.$chessman);
 
 		this.$chessman.on("click", function(e) {
-			if (this.color === board.move) {
+			if (this.color === board.move && this.color === board.player) {
 				board.clearAvailableMoves();
 				this.availableMoves();
 				e.stopPropagation();
@@ -447,9 +451,10 @@ $(function() {
 	}
 
 	Knight.prototype = new function(){
-		var move = function(e) {
+        this.move = function(e) {
 			board.clearAvailableMoves();
-			board.matrix[this.x][this.y] = null;
+            var tmp = {x: this.x, y: this.y};
+            board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
 
@@ -458,7 +463,7 @@ $(function() {
 
 			board.matrix[this.x][this.y] = this;
 			this.$chessman.appendTo($(finder.cell(this.x, this.y)));
-			board.changePlayer();
+            board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
 		var shift = [
@@ -505,7 +510,7 @@ $(function() {
 
 		this.availableMoves = function() {
 			this.moves.forEach(function(item) {
-				$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this));
+				$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this));
 			}.bind(this));
 		};
 
@@ -538,7 +543,7 @@ $(function() {
 		$(finder.cell(this.x, this.y)).append(this.$chessman);
 
 		this.$chessman.on("click", function(e) {
-			if (this.color === board.move) {
+			if (this.color === board.move && this.color === board.player) {
 				board.clearAvailableMoves();
 				this.availableMoves();
 				e.stopPropagation();
@@ -547,9 +552,10 @@ $(function() {
 	}
 
 	Bishop.prototype = new function(){
-		var move = function(e) {
+        this.move = function(e) {
 			board.clearAvailableMoves();
-			board.matrix[this.x][this.y] = null;
+            var tmp = {x: this.x, y: this.y};
+            board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
 
@@ -559,7 +565,7 @@ $(function() {
 			this.moved = true;
 			board.matrix[this.x][this.y] = this;
 			this.$chessman.appendTo($(finder.cell(this.x, this.y)));
-			board.changePlayer();
+            board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
 		var shift = [
@@ -603,7 +609,7 @@ $(function() {
 
 		this.availableMoves = function() {
 			this.moves.forEach(function(item) {
-				$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this));
+				$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this));
 			}.bind(this));
 		};
 
@@ -641,7 +647,7 @@ $(function() {
 		$(finder.cell(this.x, this.y)).append(this.$chessman);
 
 		this.$chessman.on("click", function(e) {
-			if (this.color === board.move) {
+			if (this.color === board.move && this.color === board.player) {
 				board.clearAvailableMoves();
 				this.availableMoves();
 				e.stopPropagation();
@@ -650,13 +656,21 @@ $(function() {
 	}
 
 	Pawn.prototype = new function(){
-		var move = function(e, ep) {
+        this.move = function(e, ep, piece) {
 			if (e === true) {
-				e = ep;
-				ep = true;
+                if (piece) {
+                    e = piece;
+                    piece = ep;
+                    ep = false;
+                }
+                else {
+                    e = ep;
+                    ep = true;
+                }
 			}
 
 			board.clearAvailableMoves();
+            var tmp = {x: this.x, y: this.y};
 			board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
@@ -665,10 +679,14 @@ $(function() {
 				board.kill(this.x, this.y);
 
 			if (this.x == 0 || this.x == 7) {
-				this.$chessman.remove();
-				board.showRequest(this.x, this.y);
-				board.kill(this.x, this.y);
-			}
+                this.$chessman.remove();
+                if (piece) {
+                    board.appendChessman(tmp.x, tmp.y, this.x, this.y, piece);
+                }
+                else {
+                    board.showRequest(tmp.x, tmp.y, this.x, this.y);
+                }
+            }
 			else {
 				board.matrix[this.x][this.y] = this;
 				this.$chessman.appendTo($(finder.cell(this.x, this.y)));
@@ -681,12 +699,13 @@ $(function() {
                         color: this.color
                     };
                 }
-                board.changePlayer();
+                board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 			}
 		};
 
-		var enPassantMove = function(e) {
+        this.enPassantMove = function(e) {
 			board.clearAvailableMoves();
+            var tmp = {x: this.x, y: this.y};
 			board.matrix[this.x][this.y] = null;
 			this.x = $(e.currentTarget).data('x');
 			this.y = $(e.currentTarget).data('y');
@@ -696,7 +715,7 @@ $(function() {
 			this.$chessman.detach().appendTo($(finder.cell(this.x, this.y)));
 			this.moved = true;
 
-			board.changePlayer();
+            board.changePlayer(tmp.x, tmp.y, this.x, this.y);
 		};
 
 		this.findMoves = function() {
@@ -782,11 +801,11 @@ $(function() {
 		this.availableMoves = function() {
 			this.moves.forEach(function(item) {
 				if (item.move)
-					$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this, true));
+					$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this, true));
 				else if (item.ep)
-					$(finder.cell(item.x, item.y)).addClass('available').on('click', enPassantMove.bind(this));
+					$(finder.cell(item.x, item.y)).addClass('available').on('click', this.enPassantMove.bind(this));
 				else
-					$(finder.cell(item.x, item.y)).addClass('available').on('click', move.bind(this));
+					$(finder.cell(item.x, item.y)).addClass('available').on('click', this.move.bind(this));
 			}.bind(this));
 		};
 
@@ -806,6 +825,7 @@ $(function() {
 		this.size = 8;
 		this.enPassant = null;
 		this.move = "light";
+        this.player = "light";
 
 		this.lights = [];
 		this.darks = [];
@@ -858,6 +878,121 @@ $(function() {
 			}
 		}
 
+        this.toLetters = function(x, y) {
+            return String.fromCharCode(y + 'A'.charCodeAt(0)) + (8 - x);
+        };
+
+        this.fromLetters = function(str) {
+            return {
+                x: 8 - str[1],
+                y: str.charCodeAt(0) - 'A'.charCodeAt(0)
+            };
+        };
+
+        this.socket = io('http://xnim.ru:5896');
+        this.socket.on('turn', (function(){
+            var inited = false;
+            return function(data) {
+                if (data)
+                    console.log('recv :' + data.from + ' ' + data.to);
+                if (!data && !inited) {
+                    inited = true;
+                    this.start();
+                    alert('Вы играете белыми');
+                }
+                else {
+                    if (!inited) {
+                        inited = true;
+                        this.player = "dark";
+                        alert('Вы играете черными');
+                        this.start();
+                    }
+                    var p1 = this.fromLetters(data.from);
+                    var p2 = this.fromLetters(data.to);
+                    if (data.figure)
+                        this.makeMove(p1.x, p1.y, p2.x, p2.y, data.figure);
+                    else
+                        this.makeMove(p1.x, p1.y, p2.x, p2.y);
+                }
+            }.bind(this);
+        }).call(this));
+
+        this.socket.on('win', function(data){
+            if (data) {
+                var p1 = this.fromLetters(data.from);
+                var p2 = this.fromLetters(data.to);
+                this.makeMove(p1.x, p1.y, p2.x, p2.y);
+                alert('Противник считает, что он победил');
+                this.blockMoves();
+            }
+            else {
+                alert('Противник считает, что вы совершили неверный ход');
+                this.blockMoves();
+            }
+        }.bind(this));
+
+        this.blockMoves = function (){
+            this.clearAvailableMoves();
+            this.darks.forEach(function(item) {
+                item.clearMovesArray();
+            });
+            this.lights.forEach(function(item) {
+                item.clearMovesArray();
+            });
+        };
+
+        this.makeMove = function(x1, y1, x2, y2, piece) {
+            var error = true;
+            this.matrix[x1][y1].moves.forEach(function(item){
+                if (item.x == x2 && item.y == y2) {
+                    error = false;
+                    if (item.castling) {
+                        $(finder.cell(item.x, item.y)).on('chess', this.matrix[x1][y1].castlingMove.bind(this.matrix[x1][y1]));
+                    }
+                    else if (item.move){
+                        $(finder.cell(item.x, item.y)).on('chess', this.matrix[x1][y1].move.bind(this.matrix[x1][y1], true));
+                    }
+                    else if (item.ep) {
+                        $(finder.cell(item.x, item.y)).on('chess', this.matrix[x1][y1].enPassantMove.bind(this.matrix[x1][y1]));
+                    }
+                    else {
+                        if (piece) {
+                            $(finder.cell(item.x, item.y)).on('chess', this.matrix[x1][y1].move.bind(this.matrix[x1][y1], true, piece));
+                        }
+                        else
+                            $(finder.cell(item.x, item.y)).on('chess', this.matrix[x1][y1].move.bind(this.matrix[x1][y1]));
+                    }
+
+                    $(finder.cell(item.x, item.y)).trigger('chess');
+                    $(finder.cell(item.x, item.y)).off('chess');
+                }
+            }.bind(this));
+
+            if (error) {
+                this.socket.emit('win');
+                alert("Противник совершил неверный ход. Вы победили");
+                this.blockMoves();
+            }
+        };
+
+        this.sendMove = function(x1, y1, x2, y2, win, piece) {
+            var obj = {
+                from: this.toLetters(x1, y1),
+                to: this.toLetters(x2, y2)
+            };
+            if (piece)
+                obj.figure = piece;
+
+            console.log('send :' + obj.from + ' ' + obj.to);
+
+            if (win) {
+                this.socket.emit('win', obj);
+            }
+            else {
+                this.socket.emit('turn', obj);
+            }
+        };
+
 		this.start = function() {
 			this.lights.forEach(function(item) {
 				item.findMoves();
@@ -896,8 +1031,7 @@ $(function() {
 			}
 		};
 
-		this.changePlayer = function () {
-            console.log(this.matrix);
+		this.changePlayer = function (x1, y1, x2, y2, piece) {
 			var sum = 0;
 
 			if (this.move === "dark") {
@@ -910,8 +1044,14 @@ $(function() {
 				});
 
 				if (sum === 0) {
+                    if (this.player === 'dark')
+                        this.sendMove(x1, y1, x2, y2, true, piece);
 					alert("Выиграли черные");
 				}
+                else {
+                    if (this.player === 'dark')
+                        this.sendMove(x1, y1, x2, y2, false, piece);
+                }
 			}
 			else {
 				this.lights.forEach(function(item) {
@@ -923,16 +1063,43 @@ $(function() {
 				});
 
 				if (sum === 0) {
-					alert("Выиграли белые");
+                    if (this.player === 'light')
+                        this.sendMove(x1, y1, x2, y2, true, piece);
+                    alert("Выиграли белые");
 				}
+                else {
+                    if (this.player === 'light')
+                        this.sendMove(x1, y1, x2, y2, false, piece);
+                }
 			}
 
             if (this.enPassant && this.enPassant.color === this.move)
                 this.enPassant = null;
 		};
 
+        this.appendChessman = function(x1, y1, x, y, piece) {
+            switch (piece) {
+                case 'rook':
+                    board.matrix[x][y] = new Rook(this.move, x, y);
+                    this.moved = true;
+                    break;
+                case 'knight':
+                    board.matrix[x][y] = new Knight(this.move, x, y);
+                    break;
+                case 'bishop':
+                    board.matrix[x][y] = new Bishop(this.move, x, y);
+                    break;
+                case 'queen':
+                    board.matrix[x][y] = new Queen(this.move, x, y);
+                    break;
+            }
+
+            this.move === "dark" ? this.darks.push(board.matrix[x][y]) : this.lights.push(board.matrix[x][y]);
+            board.changePlayer(x1, y1, x, y, piece);
+        };
+
 		var $request = $(templates.request).appendTo('body').hide();
-		this.showRequest = function (x, y) {
+		this.showRequest = function (x1, y1, x, y) {
 			var $palette = $(templates.row).appendTo('.pieces');
 			var $piece = $(templates.cell).appendTo($palette);
 			$(templates.img).appendTo($piece).attr('src', this.move === "dark" ? images.rook.dark : images.rook.light)
@@ -943,7 +1110,7 @@ $(function() {
 					board.matrix[x][y] = new Rook(this.move, x, y);
 					this.moved = true;
                     this.move === "dark" ? this.darks.push(board.matrix[x][y]) : this.lights.push(board.matrix[x][y]);
-					board.changePlayer();
+					board.changePlayer(x1, y1, x, y, 'rook');
 				}.bind(this, x, y));
 
 			$piece = $(templates.cell).appendTo($palette);
@@ -954,7 +1121,7 @@ $(function() {
 
 					board.matrix[x][y] = new Knight(this.move, x, y);
                     this.move === "dark" ? this.darks.push(board.matrix[x][y]) : this.lights.push(board.matrix[x][y]);
-                    board.changePlayer();
+                    board.changePlayer(x1, y1, x, y, 'knight');
 				}.bind(this, x, y));
 
 			$piece = $(templates.cell).appendTo($palette);
@@ -965,7 +1132,7 @@ $(function() {
 
 					board.matrix[x][y] = new Bishop(this.move, x, y);
                     this.move === "dark" ? this.darks.push(board.matrix[x][y]) : this.lights.push(board.matrix[x][y]);
-					board.changePlayer();
+					board.changePlayer(x1, y1, x, y, 'bishop');
 				}.bind(this, x, y));
 
 			$piece = $(templates.cell).appendTo($palette);
@@ -976,7 +1143,7 @@ $(function() {
 
 					board.matrix[x][y] = new Queen(this.move, x, y);
                     this.move === "dark" ? this.darks.push(board.matrix[x][y]) : this.lights.push(board.matrix[x][y]);
-					board.changePlayer();
+					board.changePlayer(x1, y1, x, y, 'queen');
 				}.bind(this, x, y));
 
 			if (this.move === "dark")
@@ -988,5 +1155,4 @@ $(function() {
 	}
 
 	var board = new Board();
-	board.start();
-});
+}.bind(null, io));
