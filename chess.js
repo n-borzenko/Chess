@@ -17,11 +17,21 @@ $(function() {
 		pawn: {dark: 'img/pawn_dark.svg', light: 'img/pawn_light.svg'}
 	};
 
-	var finder = new function() {
-		this.cell = function(x, y) {
-			return '[data-x=' + x + '][data-y=' + y + ']';
-		};
-	};
+    var finder = new function() {
+        this.size = 8;
+        this.$cells = new Array(this.size);
+        for (var i = 0; i < this.size; i++) {
+            this.$cells[i] = new Array(this.size);
+        }
+
+        this.addCell = function(x, y) {
+            this.$cells[x][y] = $('[data-x=' + x + '][data-y=' + y + ']');
+        };
+
+        this.cell = function(x, y) {
+            return this.$cells[x][y];
+        };
+    };
 
 	// color: "dark" / "light"
 	function King (color, x, y) {
@@ -813,6 +823,7 @@ $(function() {
 				var $cell = $(templates.cell).addClass('cell').appendTo($row);
 				$cell.attr('data-x', i).attr('data-y', j);
 				(i + j) % 2 === 1 ? $cell.addClass('black') : $cell.addClass('white');
+                finder.addCell(i, j);
 
 				if (i <= 1 || i >= 6) {
 					var color = i <= 1 ? "dark" : "light";
